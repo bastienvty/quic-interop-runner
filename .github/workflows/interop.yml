@@ -245,7 +245,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: logs-${{ matrix.server }}-${{ matrix.client }}
-          path: logs/./${{ matrix.server }}_${{ matrix.client }}/
+          path: logs/${{ matrix.server }}_${{ matrix.client }}/
       - name: Upload result
         uses: actions/upload-artifact@v4
         with:
