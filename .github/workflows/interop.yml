@@ -231,16 +231,21 @@ jobs:
           find logs_measurement -depth -name "client" -type d -exec rm -r "{}" \;
           find logs_measurement -depth -name "server" -type d -exec rm -r "{}" \;
           mv logs_measurement/${{ matrix.server }}_${{ matrix.client }}/* logs/${{ matrix.server }}_${{ matrix.client }}/
-      - name: Upload logs to interop.seemann.io
-        uses: burnett01/rsync-deployments@796cf0d5e4b535745ce49d7429f77cf39e25ef39 # v7.0.1
-        if: ${{ github.event_name == 'schedule' }}
+      # - name: Upload logs to interop.seemann.io
+      #   uses: burnett01/rsync-deployments@796cf0d5e4b535745ce49d7429f77cf39e25ef39 # v7.0.1
+      #   if: ${{ github.event_name == 'schedule' }}
+      #   with:
+      #     switches: -avzr --relative
+      #     path: logs/./${{ matrix.server }}_${{ matrix.client }}/
+      #     remote_path: ${{ vars.LOG_DIR }}/${{ needs.config.outputs.logname }}
+      #     remote_host: interop.seemann.io
+      #     remote_user: ${{ secrets.INTEROP_SEEMANN_IO_USER }}
+      #     remote_key: ${{ secrets.INTEROP_SEEMANN_IO_SSH_KEY }}
+      - name: Upload logs as artifact
+        uses: actions/upload-artifact@v4
         with:
-          switches: -avzr --relative
+          name: logs-${{ matrix.server }}-${{ matrix.client }}
           path: logs/./${{ matrix.server }}_${{ matrix.client }}/
-          remote_path: ${{ vars.LOG_DIR }}/${{ needs.config.outputs.logname }}
-          remote_host: interop.seemann.io
-          remote_user: ${{ secrets.INTEROP_SEEMANN_IO_USER }}
-          remote_key: ${{ secrets.INTEROP_SEEMANN_IO_SSH_KEY }}
       - name: Upload result
         uses: actions/upload-artifact@v4
         with:
@@ -279,26 +284,46 @@ jobs:
         with:
           name: result-aggregated
           path: result.json
-      - name: Upload logs to interop.seemann.io
-        uses: burnett01/rsync-deployments@796cf0d5e4b535745ce49d7429f77cf39e25ef39 # v7.0.1
-        if: ${{ github.event_name == 'schedule' }}
+      - name: Copy aggregated result into web folder
+        run: |
+          mkdir -p web/logs_${{ needs.config.outputs.logname }}
+          cp result.json web/logs_${{ needs.config.outputs.logname }}/result.json
+      - name: Update logs.json index
+        run: |
+          if [ ! -f "web/logs.json" ]; then
+            echo "[]" > web/logs.json
+          fi
+          jq '. + [ "logs_'${{ needs.config.outputs.logname }}'" ]' web/logs.json | sponge web/logs.json
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact to Pages
+        uses: actions/upload-pages-artifact@v2
         with:
-          switches: -avzr
-          path: result.json
-          remote_path: ${{ vars.LOG_DIR }}/${{ needs.config.outputs.logname }}/
-          remote_host: interop.seemann.io
-          remote_user: ${{ secrets.INTEROP_SEEMANN_IO_USER }}
-          remote_key: ${{ secrets.INTEROP_SEEMANN_IO_SSH_KEY }}
-      - name: Point interop.seemann.io to the latest result
-        uses: appleboy/ssh-action@25ce8cbbcb08177468c7ff7ec5cbfa236f9341e1 # v1.1.0
-        if: ${{ github.event_name == 'schedule' }}
-        with:
-          host: interop.seemann.io
-          username: ${{ secrets.INTEROP_SEEMANN_IO_USER }}
-          key: ${{ secrets.INTEROP_SEEMANN_IO_SSH_KEY }}
-          envs: LOGNAME
-          script: |
-            cd ${{ vars.LOG_DIR }}
-            jq '. += [ "${{ needs.config.outputs.logname }}" ]' logs.json | sponge logs.json
-            rm latest || true
-            ln -s $LOGNAME latest
+          path: "web"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+
+      # - name: Upload logs to interop.seemann.io
+      #   uses: burnett01/rsync-deployments@796cf0d5e4b535745ce49d7429f77cf39e25ef39 # v7.0.1
+      #   if: ${{ github.event_name == 'schedule' }}
+      #   with:
+      #     switches: -avzr
+      #     path: result.json
+      #     remote_path: ${{ vars.LOG_DIR }}/${{ needs.config.outputs.logname }}/
+      #     remote_host: interop.seemann.io
+      #     remote_user: ${{ secrets.INTEROP_SEEMANN_IO_USER }}
+      #     remote_key: ${{ secrets.INTEROP_SEEMANN_IO_SSH_KEY }}
+      # - name: Point interop.seemann.io to the latest result
+      #   uses: appleboy/ssh-action@25ce8cbbcb08177468c7ff7ec5cbfa236f9341e1 # v1.1.0
+      #   if: ${{ github.event_name == 'schedule' }}
+      #   with:
+      #     host: interop.seemann.io
+      #     username: ${{ secrets.INTEROP_SEEMANN_IO_USER }}
+      #     key: ${{ secrets.INTEROP_SEEMANN_IO_SSH_KEY }}
+      #     envs: LOGNAME
+      #     script: |
+      #       cd ${{ vars.LOG_DIR }}
+      #       jq '. += [ "${{ needs.config.outputs.logname }}" ]' logs.json | sponge logs.json
+      #       rm latest || true
+      #       ln -s $LOGNAME latest
