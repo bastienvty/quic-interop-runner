@@ -260,6 +260,9 @@ jobs:
             ${{ matrix.server }}_${{ matrix.client }}_results.json
             ${{ matrix.server }}_${{ matrix.client }}_measurements.json
   aggregate:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     needs: [config, tests]
     runs-on: ubuntu-latest
     env:
