@@ -294,19 +294,20 @@ jobs:
           path: result.json
       - name: Copy aggregated result into web folder
         run: |
-          mkdir -p web/${{ needs.config.outputs.logname }}
-          cp result.json web/${{ needs.config.outputs.logname }}/result.json
+          mkdir -p web/${{ vars.LOG_DIR }}/${{ needs.config.outputs.logname }}
+          cp result.json web/${{ vars.LOG_DIR }}/${{ needs.config.outputs.logname }}/result.json
           ls -l
           ls -l web
-          ls -l web/${{ needs.config.outputs.logname }}
       - name: Update logs.json index
         run: |
           sudo apt-get install -y moreutils
-          if [ ! -f "web/logs.json" ]; then
-            echo "[]" > web/logs.json
+          if [ ! -f "web/${{ vars.LOG_DIR }}/logs.json" ]; then
+            echo "[]" > web/${{ vars.LOG_DIR }}/logs.json
           fi
-          jq '. + [ "logs_'${{ needs.config.outputs.logname }}'" ]' web/logs.json | sponge web/logs.json
-          cat web/logs.json
+          jq '. + [ "'${{ needs.config.outputs.logname }}'" ]' web/logs.json | sponge web/${{ vars.LOG_DIR }}/logs.json
+          cat web/${{ vars.LOG_DIR }}/logs.json
+          rm latest || true
+          ln -s $LOGNAME latest
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact to Pages

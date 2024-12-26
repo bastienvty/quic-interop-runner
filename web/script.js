@@ -2,7 +2,7 @@
 
 (function () {
   "use strict";
-  const host = "https://bastienvty.github.io/quic-interop-runner/web";
+  const host = "https://bastienvty.github.io/quic-interop-runner";
   const map = { client: {}, server: {}, test: {} };
   const color_type = { succeeded: "success", unsupported: "secondary disabled", failed: "danger" };
 
@@ -34,7 +34,7 @@
     a.className = "btn btn-xs btn-" + color_type[res] + " " + res + " test-" + text.toLowerCase();
     var ttip_target = a;
     if (res !== "unsupported") {
-      a.href = "${host}/${log_dir}/${server}_${client}/${test}";
+      a.href = host + "/" + log_dir + "/" + server + "_" + client + "/" + test;
       a.target = "_blank";
       ttip += "<br><br>(Click for logs.)";
     } else {
@@ -313,7 +313,7 @@
     document.getElementById("run-selection-msg").innerHTML = "";
     var xhr = new XMLHttpRequest();
     xhr.responseType = "json";
-    xhr.open("GET", "${host}/${dir}/result.json");
+    xhr.open("GET", host + "/logs/" + dir + "/result.json");
     xhr.onreadystatechange = function () {
       if (xhr.readyState !== XMLHttpRequest.DONE) return;
       if (xhr.status !== 200) {
@@ -350,7 +350,7 @@
   // enable loading of old runs
   var xhr = new XMLHttpRequest();
   xhr.responseType = "json";
-  xhr.open("GET", "${host}/logs.json");
+  xhr.open("GET", host + "/logs/logs.json");
   xhr.onreadystatechange = function () {
     if (xhr.readyState !== XMLHttpRequest.DONE) return;
     if (xhr.status !== 200) {

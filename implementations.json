@@ -1,9 +1,4 @@
 {
-  "quic-go": {
-    "image": "martenseemann/quic-go-interop:latest",
-    "url": "https://github.com/quic-go/quic-go",
-    "role": "both"
-  },
   "quiche": {
     "image": "cloudflare/quiche-qns:latest",
     "url": "https://github.com/cloudflare/quiche",
