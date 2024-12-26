@@ -288,12 +288,15 @@ jobs:
         run: |
           mkdir -p web/logs_${{ needs.config.outputs.logname }}
           cp result.json web/logs_${{ needs.config.outputs.logname }}/result.json
+          ls -l
+          ls -l web/
       - name: Update logs.json index
         run: |
           if [ ! -f "web/logs.json" ]; then
             echo "[]" > web/logs.json
           fi
-          jq '. + [ "logs_'${{ needs.config.outputs.logname }}'" ]' web/logs.json | sponge web/logs.json
+          jq '. + [ "logs_'${{ needs.config.outputs.logname }}'" ]' web/logs.json | > web/logs-temp.json
+          mv web/logs-temp.json web/logs.json
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact to Pages
