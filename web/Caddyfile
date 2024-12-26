@@ -6,8 +6,8 @@ interop.ooest.com:80
 
 # The website must be mounted at /var/www.
 # The log directory must be redirected at /logs.
-root * /var/www
-redir /logs /logs/
+root /logs/* /
+root * /var/www/
 
 # Allow external sites to download our JSON files.
 @json {
