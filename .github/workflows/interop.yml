@@ -7,6 +7,11 @@ on:
   push:
     branches: ["master"]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 # Cache key for caching the Wireshark build.
 # To trigger a rebuild of Wireshark increment this value.
 # The rebuild will then build the current master of Wireshark and save it under the new key.
