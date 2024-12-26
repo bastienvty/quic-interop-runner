@@ -359,7 +359,7 @@
     var s = document.createElement("select");
     xhr.response.reverse().forEach(function (el) {
       var opt = document.createElement("option");
-      //opt.innerHTML = el.replace("logs_", "");
+      opt.innerHTML = el.replace("logs_", "");
       opt.value = el;
       s.appendChild(opt);
     });
@@ -370,7 +370,7 @@
     if (selectedRun != null) {
       // just set the selected run, no need to trigger "change"
       // event here
-      s.value = selectedRun;
+      s.value = "logs_" + selectedRun;
     }
   };
   xhr.send();
