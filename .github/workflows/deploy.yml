@@ -29,4 +29,4 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             mv ${{ secrets.DEPLOY_WEBSITE_DIR }}/Caddyfile ${{ secrets.DEPLOY_APPDATA }}/Caddyfile
-            sudo docker container restart ${{ vars.DEPLOY_CONTAINER }}
+            docker container restart ${{ vars.DEPLOY_CONTAINER }}
