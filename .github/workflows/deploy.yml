@@ -27,4 +27,6 @@ jobs:
           port: ${{ secrets.DEPLOY_PORT }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: service website restart
+          script: |
+            mv ${{ secrets.DEPLOY_WEBSITE_DIR }}/Caddyfile ${{ secrets.DEPLOY_APPDATA }}/Caddyfile
+            sudo docker container restart ${{ vars.DEPLOY_CONTAINER }}

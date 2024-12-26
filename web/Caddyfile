@@ -1,9 +1,14 @@
+{
+    auto_https off
+}
+
+
 interop.ooest.com:80
 
-# The website must be mounted at /var/www/interop/web.
-# The log directory must be mounted at /var/www/interop/logs.
-root /logs/* /var/www/interop
-root * /var/www/interop/web
+# The website must be mounted at /var/www/web.
+# The log directory must be mounted at /var/www/logs.
+root /logs/* /var/www/
+root * /var/www/web
 
 # Allow external sites to download our JSON files.
 @json {
