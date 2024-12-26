@@ -291,7 +291,7 @@ jobs:
           path: result.json
       - name: Copy aggregated result into web folder
         run: |
-          mkdir -p web/logs_${{ needs.config.outputs.logname }}
+          mkdir -p web/${{ needs.config.outputs.logname }}
           cp result.json web/${{ needs.config.outputs.logname }}/result.json
           ls -l
           ls -l web
