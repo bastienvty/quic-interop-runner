@@ -1,7 +1,7 @@
 name: cleanup
 on:
   schedule:
-    - cron: "0 */8 * * *" # every 8h
+    - cron: "0 6 * * *" # every day at 6:00 AM
 
 jobs:
   cleanup:
@@ -15,29 +15,29 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
-            delete_oldest_folder() {
-                OLDEST_DIR=$(find "${{ vars.LOG_DIR }}" -mindepth 1 -maxdepth 1 -type d -printf '%T+ %p\n' | sort | head -n 1 | cut -d" " -f2-)
-                if [[ -n "$OLDEST_DIR" ]]; then
-                    echo "Deleting oldest directory: $OLDEST_DIR"
-                    rm -rf "$OLDEST_DIR"
-                fi
+            delete_excess_folders() {
+                # Count the number of directories in the log folder
+                NUM_DIRS=$(find "${{ secrets.DEPLOY_LOG_DIR }}" -mindepth 1 -maxdepth 1 -type d | wc -l)
+
+                # Delete oldest directories until only 10 remain
+                while [[ "$NUM_DIRS" -gt 10 ]]; do
+                    OLDEST_DIR=$(find "${{ secrets.DEPLOY_LOG_DIR }}" -mindepth 1 -maxdepth 1 -type d -printf '%T+ %p\n' | sort | head -n 1 | cut -d" " -f2-)
+                    if [[ -n "$OLDEST_DIR" ]]; then
+                        echo "Deleting oldest directory: $OLDEST_DIR"
+                        rm -rf "$OLDEST_DIR"
+                        NUM_DIRS=$((NUM_DIRS - 1))
+                    else
+                        echo "No more directories to delete."
+                        break
+                    fi
+                done
             }
 
-            # Loop until enough space is available or no directories left to delete
-            while true; do
-                AVAILABLE_SPACE_GB=$(df -BG "${{ vars.LOG_DIR }}" | tail -n 1 | awk '{print $4}' | sed 's/G//')
-                echo "Available Space: $AVAILABLE_SPACE_GB GB"
+            # Run the cleanup function
+            delete_excess_folders
 
-                if [[ "$AVAILABLE_SPACE_GB" -lt 50 ]]; then
-                    echo "Less than 50 GB available. Trying to clean up..."
-                    delete_oldest_folder
-                else
-                    echo "Enough space available."
-                    break
-                fi
-            done
-
+            # Generate a JSON file with the list of remaining directories
             TEMP_FILE=$(mktemp)
-            find "${{ vars.LOG_DIR }}" -mindepth 1 -maxdepth 1 -type d -not -name 'lost+found' -exec basename {} \; | sort > "$TEMP_FILE"
-            jq -R -s 'split("\n") | map(select(. != ""))' "$TEMP_FILE" > "${{ vars.LOG_DIR }}/logs.json"
+            find "${{ secrets.DEPLOY_LOG_DIR }}" -mindepth 1 -maxdepth 1 -type d -not -name 'lost+found' -exec basename {} \; | sort > "$TEMP_FILE"
+            jq -R -s 'split("\n") | map(select(. != ""))' "$TEMP_FILE" > "${{ secrets.DEPLOY_LOG_DIR }}/logs.json"
             rm -f "$TEMP_FILE"
