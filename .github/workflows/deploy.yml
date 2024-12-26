@@ -1,0 +1,30 @@
+name: Deploy website
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload website to server
+        uses: burnett01/rsync-deployments@796cf0d5e4b535745ce49d7429f77cf39e25ef39 # v7.0.1
+        with:
+          switches: -avzr --delete
+          path: web/
+          remote_path: ${{ secrets.DEPLOY_WEBSITE_DIR }}
+          remote_host: ${{ secrets.DEPLOY_HOST }}
+          remote_port: ${{ secrets.DEPLOY_PORT }}
+          remote_user: ${{ secrets.DEPLOY_USER }}
+          remote_key: ${{ secrets.DEPLOY_SSH_KEY }}
+      - name: Restart server
+        uses: appleboy/ssh-action@25ce8cbbcb08177468c7ff7ec5cbfa236f9341e1 # v1.1.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: service website restart
