@@ -304,10 +304,10 @@ jobs:
           if [ ! -f "web/${{ vars.LOG_DIR }}/logs.json" ]; then
             echo "[]" > web/${{ vars.LOG_DIR }}/logs.json
           fi
-          jq '. + [ "'${{ needs.config.outputs.logname }}'" ]' web/logs.json | sponge web/${{ vars.LOG_DIR }}/logs.json
+          jq '. + [ "'${{ needs.config.outputs.logname }}'" ]' web/${{ vars.LOG_DIR }}/logs.json | sponge web/${{ vars.LOG_DIR }}/logs.json
           cat web/${{ vars.LOG_DIR }}/logs.json
-          rm latest || true
-          ln -s $LOGNAME latest
+          rm web/${{ vars.LOG_DIR }}/latest || true
+          ln -s web/${{ vars.LOG_DIR }}/$LOGNAME web/${{ vars.LOG_DIR }}/latest
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact to Pages
