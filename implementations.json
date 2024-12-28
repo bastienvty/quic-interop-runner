@@ -1,14 +1,4 @@
 {
-  "quic-go": {
-    "image": "martenseemann/quic-go-interop:latest",
-    "url": "https://github.com/quic-go/quic-go",
-    "role": "both"
-  },
-  "picoquic": {
-    "image": "privateoctopus/picoquic:latest",
-    "url": "https://github.com/private-octopus/picoquic",
-    "role": "both"
-  },
   "quiche": {
     "image": "cloudflare/quiche-qns:latest",
     "url": "https://github.com/cloudflare/quiche",
@@ -34,9 +24,19 @@
     "url": "https://github.com/Tencent/tquic",
     "role": "both"
   },
-  "gquiche": {
-    "image": "tquicgroup/qirgq:latest",
-    "url": "https://github.com/iyangsj/quiche",
+  "quic-go": {
+    "image": "martenseemann/quic-go-interop:latest",
+    "url": "https://github.com/quic-go/quic-go",
+    "role": "both"
+  },
+  "picoquic": {
+    "image": "privateoctopus/picoquic:latest",
+    "url": "https://github.com/private-octopus/picoquic",
+    "role": "both"
+  },
+  "mvfst": {
+    "image": "ghcr.io/facebook/proxygen/mvfst-interop:latest",
+    "url": "https://github.com/facebookincubator/mvfst",
     "role": "both"
   }
 }
