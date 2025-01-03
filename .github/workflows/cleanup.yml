@@ -21,7 +21,7 @@ jobs:
                 NUM_DIRS=$(find "${{ secrets.DEPLOY_LOG_DIR }}" -mindepth 1 -maxdepth 1 -type d | wc -l)
 
                 # Delete oldest directories until only 10 remain
-                while [[ "$NUM_DIRS" -gt 10 ]]; do
+                while [[ "$NUM_DIRS" -gt 9 ]]; do
                     OLDEST_DIR=$(find "${{ secrets.DEPLOY_LOG_DIR }}" -mindepth 1 -maxdepth 1 -type d -printf '%T+ %p\n' | sort | head -n 1 | cut -d" " -f2-)
                     if [[ -n "$OLDEST_DIR" ]]; then
                         echo "Deleting oldest directory: $OLDEST_DIR"
