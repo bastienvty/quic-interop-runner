@@ -30,5 +30,4 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           passphrase: ${{ secrets.DEPLOY_SSH_KEY_PASS }}
           script: |
-            mv ${{ secrets.DEPLOY_WEBSITE_DIR }}/Caddyfile ${{ secrets.DEPLOY_WEBSITE_DIR }}/cleanup.sh ${{ secrets.DEPLOY_APPDATA }}/.
             docker container restart ${{ vars.DEPLOY_CONTAINER }}

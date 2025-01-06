@@ -1621,6 +1621,7 @@ class MeasurementGoodput(Measurement):
         self._files = [self._generate_random_file(self.FILESIZE)]
         return self._files
 
+    # Here is the goodput calculated
     def check(self) -> TestResult:
         super().check()
         num_handshakes = self._count_handshakes()
@@ -1651,6 +1652,7 @@ class MeasurementGoodput(Measurement):
         return self._result
 
 
+# Integrate the goodput measurement with cross traffic
 class MeasurementCrossTraffic(MeasurementGoodput):
     FILESIZE = 25 * MB
 
