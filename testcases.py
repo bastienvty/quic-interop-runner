@@ -101,7 +101,7 @@ class TestCase(abc.ABC):
     @staticmethod
     def scenario() -> str:
         """Scenario for the ns3 simulator"""
-        return "simple-p2p --delay=15ms --bandwidth=10Mbps --queue=25"
+        return "simple-p2p --delay=15ms --bandwidth=100Mbps --queue=25"
 
     @staticmethod
     def timeout() -> int:
@@ -409,7 +409,7 @@ class TestCaseLongRTT(TestCaseHandshake):
     @staticmethod
     def scenario() -> str:
         """Scenario for the ns3 simulator"""
-        return "simple-p2p --delay=750ms --bandwidth=10Mbps --queue=25"
+        return "simple-p2p --delay=750ms --bandwidth=100Mbps --queue=25"
 
     def check(self) -> TestResult:
         super().check()
@@ -792,7 +792,7 @@ class TestCaseAmplificationLimit(TestCase):
     def scenario() -> str:
         """Scenario for the ns3 simulator"""
         # Let the ClientHello pass, but drop a bunch of retransmissions afterwards.
-        return "droplist --delay=15ms --bandwidth=10Mbps --queue=25 --drops_to_server=2,3,4,5,6,7"
+        return "droplist --delay=15ms --bandwidth=100Mbps --queue=25 --drops_to_server=2,3,4,5,6,7"
 
     def get_paths(self):
         self._files = [self._generate_random_file(5 * KB)]
@@ -904,7 +904,7 @@ class TestCaseBlackhole(TestCase):
     @staticmethod
     def scenario() -> str:
         """Scenario for the ns3 simulator"""
-        return "blackhole --delay=15ms --bandwidth=10Mbps --queue=25 --on=5s --off=2s"
+        return "blackhole --delay=15ms --bandwidth=100Mbps --queue=25 --on=5s --off=2s"
 
     def get_paths(self):
         self._files = [self._generate_random_file(10 * MB)]
@@ -1033,7 +1033,7 @@ class TestCaseHandshakeLoss(TestCase):
     @staticmethod
     def scenario() -> str:
         """Scenario for the ns3 simulator"""
-        return "drop-rate --delay=15ms --bandwidth=10Mbps --queue=25 --rate_to_server=30 --rate_to_client=30 --burst_to_server=3 --burst_to_client=3"
+        return "drop-rate --delay=15ms --bandwidth=100Mbps --queue=25 --rate_to_server=30 --rate_to_client=30 --burst_to_server=3 --burst_to_client=3"
 
     def get_paths(self):
         for _ in range(self._num_runs):
@@ -1073,7 +1073,7 @@ class TestCaseTransferLoss(TestCase):
     @staticmethod
     def scenario() -> str:
         """Scenario for the ns3 simulator"""
-        return "drop-rate --delay=15ms --bandwidth=10Mbps --queue=25 --rate_to_server=2 --rate_to_client=2 --burst_to_server=3 --burst_to_client=3"
+        return "drop-rate --delay=15ms --bandwidth=100Mbps --queue=25 --rate_to_server=2 --rate_to_client=2 --burst_to_server=3 --burst_to_client=3"
 
     def get_paths(self):
         # At a packet loss rate of 2% and a MTU of 1500 bytes, we can expect 27 dropped packets.
@@ -1107,7 +1107,7 @@ class TestCaseHandshakeCorruption(TestCaseHandshakeLoss):
     @staticmethod
     def scenario() -> str:
         """Scenario for the ns3 simulator"""
-        return "corrupt-rate --delay=15ms --bandwidth=10Mbps --queue=25 --rate_to_server=30 --rate_to_client=30 --burst_to_server=3 --burst_to_client=3"
+        return "corrupt-rate --delay=15ms --bandwidth=100Mbps --queue=25 --rate_to_server=30 --rate_to_client=30 --burst_to_server=3 --burst_to_client=3"
 
 
 class TestCaseTransferCorruption(TestCaseTransferLoss):
@@ -1126,7 +1126,7 @@ class TestCaseTransferCorruption(TestCaseTransferLoss):
     @staticmethod
     def scenario() -> str:
         """Scenario for the ns3 simulator"""
-        return "corrupt-rate --delay=15ms --bandwidth=10Mbps --queue=25 --rate_to_server=2 --rate_to_client=2 --burst_to_server=3 --burst_to_client=3"
+        return "corrupt-rate --delay=15ms --bandwidth=100Mbps --queue=25 --rate_to_server=2 --rate_to_client=2 --burst_to_server=3 --burst_to_client=3"
 
 
 class TestCaseECN(TestCaseHandshake):
@@ -1242,7 +1242,7 @@ class TestCasePortRebinding(TestCaseTransfer):
     @staticmethod
     def scenario() -> str:
         """Scenario for the ns3 simulator"""
-        return "rebind --delay=15ms --bandwidth=10Mbps --queue=25 --first-rebind=1s --rebind-freq=5s"
+        return "rebind --delay=15ms --bandwidth=100Mbps --queue=25 --first-rebind=1s --rebind-freq=5s"
 
     def check(self) -> TestResult:
         super().check()
@@ -1611,7 +1611,7 @@ class MeasurementGoodput(Measurement):
 
     @staticmethod
     def desc():
-        return "Measures connection goodput over a 10Mbps link."
+        return "Measures connection goodput over a 100Mbps link."
 
     @staticmethod
     def repetitions() -> int:
@@ -1666,7 +1666,7 @@ class MeasurementCrossTraffic(MeasurementGoodput):
 
     @staticmethod
     def desc():
-        return "Measures goodput over a 10Mbps link when competing with a TCP (cubic) connection."
+        return "Measures goodput over a 100Mbps link when competing with a TCP (cubic) connection."
 
     @staticmethod
     def timeout() -> int:
