@@ -13,7 +13,7 @@ jobs:
       - name: Upload website to server
         uses: burnett01/rsync-deployments@796cf0d5e4b535745ce49d7429f77cf39e25ef39 # v7.0.1
         with:
-          switches: -avzr --delete
+          switches: -avzr --exclude="logs/" --delete
           path: web/
           remote_path: ${{ secrets.DEPLOY_WEBSITE_DIR }}
           remote_host: ${{ secrets.DEPLOY_HOST }}
