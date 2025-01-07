@@ -130,7 +130,7 @@ class InteropRunner:
             "CLIENT_LOGS=" + client_log_dir.name + " "
             "WWW=" + www_dir.name + " "
             "DOWNLOADS=" + downloads_dir.name + " "
-            'SCENARIO="simple-p2p --delay=15ms --bandwidth=100Mbps --queue=25" '
+            'SCENARIO="simple-p2p --delay=15ms --bandwidth=10Mbps --queue=25" '
             "CLIENT=" + self._implementations[name]["image"] + " "
             "SERVER="
             + self._implementations[name]["image"]
@@ -142,7 +142,6 @@ class InteropRunner:
         )
         if not self._is_unsupported(output.stdout.splitlines()):
             logging.error("%s client not compliant.", name)
-            logging.error("%s", output.stdout.decode("utf-8", errors="replace"))
             logging.debug("%s", output.stdout.decode("utf-8", errors="replace"))
             self.compliant[name] = False
             return False
